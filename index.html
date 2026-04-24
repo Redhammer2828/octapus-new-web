@@ -1003,7 +1003,7 @@ a,
               </div>
               <div class="casestudy-main" data-w-id="39f1b64d-1ee0-33a0-1042-0b8cbaba4e75"
                 style="filter:blur(5px);opacity:0;-webkit-transform:translate3d(0, 2rem, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 2rem, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 2rem, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 2rem, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+                <div class="oct-services-grid">
 
                   <!-- Technology Sector -->
                   <div
@@ -3319,6 +3319,243 @@ a,
   <script src="js/gsap.min.js" type="text/javascript"></script>
   <script src="js/SplitText.min.js" type="text/javascript"></script>
   <script src="js/ScrollTrigger.min.js" type="text/javascript"></script>
+
+  <!-- OCTAPUS Language Toggle -->
+  <style>
+    html.oct-ar body, html.oct-ar * {
+      font-family: 'Tajawal', Arial, sans-serif !important;
+    }
+
+    /* Services two-column grid — responsive */
+    .oct-services-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    @media (max-width: 767px) {
+      .oct-services-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+      }
+    }
+
+    /* Language toggle — top right */
+    #oct-lang-toggle-wrap {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.5rem;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      background: rgba(15, 15, 20, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 100px;
+      padding: 0.25rem;
+      gap: 0;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.07);
+    }
+    .oct-lang-opt {
+      position: relative;
+      padding: 0.38rem 1rem;
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      color: rgba(255,255,255,0.4);
+      transition: color 0.25s;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .oct-lang-opt.active {
+      color: #111;
+    }
+    #oct-lang-pill {
+      position: absolute;
+      top: 0.25rem;
+      left: 0.25rem;
+      height: calc(100% - 0.5rem);
+      background: #ffffff;
+      border-radius: 100px;
+      transition: transform 0.3s cubic-bezier(.4,0,.2,1), width 0.3s cubic-bezier(.4,0,.2,1);
+      pointer-events: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+  </style>
+  <div id="oct-lang-toggle-wrap" onclick="octToggleLang()" title="Switch Language">
+    <div id="oct-lang-pill"></div>
+    <div class="oct-lang-opt active" id="oct-opt-en">EN</div>
+    <div class="oct-lang-opt" id="oct-opt-ar">عربي</div>
+  </div>
+
+  <script>
+  (function() {
+    // Selector-based translation map: { s: cssSelector, p: property, ar: string|string[], all: bool }
+    var T = [
+      // Hero
+      { s: '.hero-heading', p: 'innerHTML', ar: 'ابنِ بذكاء.<br />سوّق بحدّة. توسّع أسرع.' },
+      { s: '.subheading-text.hero', p: 'textContent', ar: 'يُهندس الذكاء الاصطناعي منظومتك. يُحدّد الذكاء البشري قوتك. تجمع أوكتابس بين الاثنين في محرك واحد متكامل — تمزج التقنية المتقدمة بالنمو الإبداعي لتقديم نظام واحد موحّد.' },
+      { s: '.button-wrap .button:last-child .button-text', p: 'textContent', ar: 'اعمل معنا' },
+
+      // Stats
+      { s: '.statics-item-name', p: 'textContent', ar: ['ساعات موفّرة', 'تعزيز الإنتاجية', 'استجابة أسرع'], all: true },
+
+      // Values section
+      { s: '#values-section .eye-brow-text', p: 'textContent', ar: 'القيم' },
+      { s: '#values-section .heading-style-h2', p: 'textContent', ar: 'لماذا أوكتابس؟' },
+      { s: '#values-section .subheading-text', p: 'textContent', ar: 'يُهندس الذكاء الاصطناعي منظومتك. يُحدّد الذكاء البشري قوتك. تجمع أوكتابس بين الاثنين في محرك واحد متكامل.' },
+      { s: '.value-card-title', p: 'textContent', ar: ['التقنية المتقدمة: المحرك الخفي', 'الجناح الإبداعي: الواجهة البشرية'], all: true },
+      { s: '.value-card-desc', p: 'textContent', ar: [
+        'نبني بنية تحتية عالية المستوى. برمجيات معقدة، أنظمة متينة، وذكاء اصطناعي مدرَّب خصيصاً لأدواتك واحتياجاتك الفريدة.',
+        'نستخدم علم النفس العميق لتقديم التقنية للعالم الحقيقي. نترجم تعقيد التقنية المتقدمة إلى تجربة علامة تجارية بسيطة وعالية التأثير تتواصل بشكل فوري.'
+      ], all: true },
+
+      // Capabilities section
+      { s: '#service-section .eye-brow-text', p: 'textContent', ar: 'الإمكانيات' },
+      { s: '#service-section .heading-style-h2', p: 'textContent', ar: 'خدماتنا المدعومة بالذكاء الاصطناعي' },
+
+      // Our Services section
+      { s: '#project-section .eye-brow-text', p: 'textContent', ar: 'ما نفعله' },
+      { s: '#project-section .heading-style-h2', p: 'textContent', ar: 'خدماتنا' },
+      { s: '#project-section .subheading-text', p: 'textContent', ar: 'جناحان قويان. منظومة واحدة موحّدة. كل ما يحتاجه عملك للبناء والنمو والتوسع.' },
+
+      // Process section
+      { s: '#process-section .eye-brow-text', p: 'textContent', ar: 'المنهجية' },
+      { s: '#process-section .heading-style-h2', p: 'textContent', ar: 'كيف نعمل' },
+      { s: '#process-section .subheading-text', p: 'textContent', ar: 'عندما يصل التحدي إلى مكتب البحث والتطوير، تبدأ الابتكارات. يحقق كلا القسمين في المشكلة بالتوازي — أحدهما بالتقنية المتقدمة، والآخر بالنمو الإبداعي — ثم ندمج النتائج في حل واحد متكامل.' },
+      { s: '.process-item-title', p: 'textContent', ar: ['الاكتشاف والتدقيق', 'مخطط الأتمتة', 'البناء والتكامل', 'الاختبار والتحسين', 'الإطلاق والتوسع'], all: true },
+      { s: '.process-item-desc', p: 'textContent', ar: [
+        'نحلل مسارات عملك وعقباته وفرص الإيرادات.',
+        'نصمم هيكل أتمتة تفصيلياً متوافقاً مع مؤشرات الأداء الرئيسية.',
+        'يطبق مهندسونا أنظمة الذكاء الاصطناعي ويدمجونها مع أدواتك الحالية.',
+        'اختبارات الأداء والتحقق من البيانات والتحسين المستمر.',
+        'الإطلاق والمراقبة والتحسين المتواصل للنمو.'
+      ], all: true },
+
+      // Integrations section
+      { s: '#integrations-section .eye-brow-text', p: 'textContent', ar: 'التكاملات' },
+      { s: '#integrations-section .heading-style-h2', p: 'textContent', ar: 'يتكامل مع أدواتك الحالية' },
+
+      // Testimonials section
+      { s: '#testimonials-section .eye-brow-text', p: 'textContent', ar: 'الآراء' },
+      { s: '#testimonials-section .heading-style-h2', p: 'textContent', ar: 'ماذا يقول عملاؤنا' },
+
+      // Pricing section
+      { s: '#pricing-section .eye-brow-text', p: 'textContent', ar: 'التسعير' },
+      { s: '#pricing-section .heading-style-h2', p: 'textContent', ar: 'خطط بسيطة وشفافة' },
+
+      // FAQ section
+      { s: '#FAQ-section .eye-brow-text', p: 'textContent', ar: 'الأسئلة الشائعة' },
+      { s: '#FAQ-section .heading-style-h2', p: 'textContent', ar: 'أسئلة شائعة' },
+      { s: '.faq-item-question', p: 'textContent', ar: [
+        'ما هي أوكتابس؟',
+        'ما هو نظام أوكتابس الذكي (OIS)؟',
+        'هل تعملون في مجال التقنية فقط، أم التسويق أيضاً؟',
+        'هل الأتمتة بالذكاء الاصطناعي آمنة؟',
+        'ما العائد على الاستثمار المتوقع؟'
+      ], all: true },
+      { s: '.faq-item-answer-text', p: 'textContent', ar: [
+        'أوكتابس للاستراتيجية والتطوير هي منظومة متعددة القدرات تدمج التقنية المتقدمة بالنمو الإبداعي. نقدم طريقة جديدة لحل مشاكل الأعمال من خلال نظام OIS — الذي يجمع بين هندسة الذكاء الاصطناعي واستراتيجية الذكاء البشري لتقديم حل واحد متكامل وسلس.',
+        'OIS هو منهجيتنا الأساسية المبنية على جناحين قويين — قسم التقنية (الهندسة المتقدمة) والجناح الإبداعي (النمو والعلامة التجارية). يعمل الجناحان معاً في مكتب البحث والتطوير للتحقيق في كل مشكلة من زاويتهما الفريدة، ثم يدمجان النتائج في منظومة واحدة مخصصة لعملك.',
+        'كلاهما. معظم الشركات تجبرك على الاختيار بين البناء التقني أو الانتشار التسويقي. أوكتابس تقدم الاثنين. يبني جناح التقنية الذكاء الاصطناعي والبرمجيات والأنظمة، فيما يستخدم الجناح الإبداعي علم النفس العميق لتقديمها للسوق.',
+        'تتراوح مدد المشاريع عادةً بين أسبوعين وستة أسابيع حسب التعقيد. أنظمة الأتمتة الأصغر تُنشر في 2-3 أسابيع. المشاريع المتقدمة متعددة المنصات قد تستغرق 4-6 أسابيع أو أكثر.',
+        'تتراوح مدد المشاريع عادةً بين أسبوعين وستة أسابيع. شهد عملاؤنا زيادة في الإنتاجية تصل إلى 80% وتوفيراً يتجاوز 30 ساعة أسبوعياً. العائد يعتمد على حجم عملك ونوع الحل المُطبَّق.'
+      ], all: true },
+      { s: '.faqs-cta-text', p: 'textContent', ar: 'هل لديك أسئلة أخرى؟' },
+
+      // Contact / CTA card
+      { s: '.cta-form-card-heading', p: 'textContent', ar: 'هل أنت مستعد لتحديث منظومة أعمالك؟' },
+      { s: '.subheading-text.on-cta-card:first-of-type', p: 'textContent', ar: 'معظم الشركات تختار إما البناء أو الانتشار. أوكتابس تمنحك كليهما — تقنية متقدمة بداخل. بساطة في الخارج. نمو متواصل.' },
+
+      // Nav menu links
+      { s: '.nav-link[href="#values-section"]', p: 'textContent', ar: 'القيم' },
+      { s: '.nav-link[href="#service-section"]', p: 'textContent', ar: 'الخدمات' },
+      { s: '.nav-link[href="#process-section"]', p: 'textContent', ar: 'المنهجية' },
+      { s: '.nav-link[href="#project-section"]', p: 'textContent', ar: 'المشاريع' },
+      { s: '.nav-link[href="#integrations-section"]', p: 'textContent', ar: 'التكاملات' },
+      { s: '.nav-link[href="#testimonials-section"]', p: 'textContent', ar: 'الآراء' },
+      { s: '.nav-link[href="#pricing-section"]', p: 'textContent', ar: 'التسعير' },
+      { s: '.nav-link[href="#team-section"]', p: 'textContent', ar: 'الفريق' },
+      { s: '.nav-link[href="#FAQ-section"]', p: 'textContent', ar: 'الأسئلة الشائعة' },
+
+      // Footer copyright
+      { s: '.footer-credits-text', p: 'textContent', ar: 'مُشغَّل بواسطة أوكتابس' }
+    ];
+
+    var _cache = {};
+
+    function octApply(lang) {
+      var isAr = lang === 'ar';
+      T.forEach(function(t, ti) {
+        if (t.all) {
+          var els = document.querySelectorAll(t.s);
+          var arArr = Array.isArray(t.ar) ? t.ar : [t.ar];
+          els.forEach(function(el, i) {
+            var key = t.s + '|' + i;
+            if (isAr) {
+              if (!_cache[key]) _cache[key] = el[t.p];
+              if (i < arArr.length) el[t.p] = arArr[i];
+            } else {
+              if (_cache[key] !== undefined) el[t.p] = _cache[key];
+            }
+          });
+        } else {
+          var el = document.querySelector(t.s);
+          if (!el) return;
+          var key = t.s;
+          if (isAr) {
+            if (!_cache[key]) _cache[key] = el[t.p];
+            el[t.p] = t.ar;
+          } else {
+            if (_cache[key] !== undefined) el[t.p] = _cache[key];
+          }
+        }
+      });
+
+      // Toggle dir + class
+      var html = document.documentElement;
+      html.setAttribute('dir', isAr ? 'rtl' : 'ltr');
+      html.setAttribute('lang', isAr ? 'ar' : 'en');
+      html.classList.toggle('oct-ar', isAr);
+
+      // Animate sliding pill
+      var optEn = document.getElementById('oct-opt-en');
+      var optAr = document.getElementById('oct-opt-ar');
+      var pill  = document.getElementById('oct-lang-pill');
+      if (optEn && optAr && pill) {
+        var active = isAr ? optAr : optEn;
+        var inactive = isAr ? optEn : optAr;
+        active.classList.add('active');
+        inactive.classList.remove('active');
+        pill.style.width  = active.offsetWidth + 'px';
+        pill.style.transform = 'translateX(' + active.offsetLeft + 'px)';
+      }
+
+      // Persist
+      localStorage.setItem('oct-lang', lang);
+    }
+
+    window.octToggleLang = function() {
+      var cur = localStorage.getItem('oct-lang') || 'en';
+      octApply(cur === 'en' ? 'ar' : 'en');
+    };
+
+    // Restore on load + init pill position
+    document.addEventListener('DOMContentLoaded', function() {
+      var saved = localStorage.getItem('oct-lang');
+      // Init pill to EN by default
+      var optEn = document.getElementById('oct-opt-en');
+      var pill  = document.getElementById('oct-lang-pill');
+      if (optEn && pill) {
+        pill.style.width = optEn.offsetWidth + 'px';
+        pill.style.transform = 'translateX(0px)';
+      }
+      if (saved === 'ar') octApply('ar');
+    });
+  })();
+  </script>
 
   <!-- OCTAPUS FAQ Chatbot -->
   <style>
